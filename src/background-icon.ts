@@ -5,7 +5,10 @@ import { BrowserAction } from './types';
 
 const store = new TabStore(BrowserAction.Background);
 const theme = new Theme();
-const icon = new Icon(devicePixelRatio * 2, theme);
+// devicePixelRatio is undefined in extension service workers in some browsers
+// (notably Chrome). Fallback to 1 when it isn't available so the icon canvas
+// has a sensible size.
+const icon = new Icon((globalThis.devicePixelRatio ?? 1) * 2, theme);
 
 store.windowListeners.add(render);
 theme.listeners.add(render);
